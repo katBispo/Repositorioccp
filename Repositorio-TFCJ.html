@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prints CCP TFCJ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background-color: #4abeb5; 
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            width: 100%;
+            position: relative; 
+        }
+        .header .title {
+            margin: 0;
+            position: relative;
+            z-index: 1;
+        }
+        .header img {
+            width: 95px; 
+            height: auto;
+            position: absolute;
+            left: 40px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 2; 
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 50px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            text-align: center;
+            position: relative;
+        }
+        .day-section {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+        }
+        .day-title {
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0;
+            display: flex;
+            align-items: center;
+        }
+        .day-images {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .day-images li {
+            margin: 5px 0;
+        }
+        .day-images a {
+            text-decoration: none;
+            color: #018e80;
+            font-weight: bold;
+        }
+        .day-images a:hover {
+            text-decoration: underline;
+        }
+        .expand-arrow {
+            cursor: pointer;
+            margin-right: 5px;
+            transition: transform 0.3s ease;
+        }
+        .day-title.active .expand-arrow {
+            transform: rotate(90deg);
+        }
+        .redirect-button:hover {
+            background-color: #4abeb5;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor:pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+            display: inline-block;
+        }
+          /* botões CCP*/
+          .ccp-container {
+            background-color: #4abeb5;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin: 10px;
+            border-radius: 5px;
+        }
+
+        .ccp-container a {
+            display: inline-block;
+            background-color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 3px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        .ccp-container a:hover {
+            background-color: #e0f2f1;
+        }
+
+     .container {
+            background-color: #ffffff;
+            padding: 50px;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 100%;
+            text-align: center;
+            position: relative;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="header"> 
+        <img src="vale-logo-1.svg" alt="Ícone">
+        <span class="title">Prints CCP TFCJ</span>
+    </div>
+    
+    <div class="ccp-container">
+        <a href="IndexRepositorio-TFPM.html" class="button" target="_blank">CCP-TFPM</a>
+        <a href="Repositorio-ACD.html" class="button" target="_blank">CCP-ACD</a>
+        <a href="Repositorio-TFCJ.html" class="button" target="_blank">CCP-TFCJ</a>
+        <a href="Repositorio-TFSP.html" class="button" target="_blank">CCP-TFSP</a>
+        <a href="Repositorio-CG-SLS.html" class="button" target="_blank">CCP-CG-SLS</a>
+        <a href="Repositorio-CMPN-EFC.html" class="button" target="_blank">CMPN-EFC</a>
+        <a href="Repositorio-TERMINAIS.html" class="button" target="_blank">CCP-TERMINAIS</a>
+        <a href="Repositorio-OEM.html" class="button" target="_blank">CCP-OEM</a>
+        <a href="Repositorio-MBA.html" class="button" target="_blank">CCP-MBA</a>
+        <a href="Repositorio-PBA.html" class="button" target="_blank">CCP-PBA</a>
+    </div>
+    <div class="container" id="currentDayContainer">
+        <h2>Imagens dos Últimos Quatro Dias</h2>
+    </div>
+    <div class="container" id="previousDaysContainer">
+        <h2>Imagens dos Dias Anteriores</h2>
+    </div>
+    <script>
+        window.onload = function() {
+            //const currentDayDirectory = 'http://172.20.15.22:8080/painel/todayprints';
+            //const previousDaysDirectory = 'http://172.20.15.22:8080/painel/backupPrints';
+            const currentDayDirectory = './pastaImagensTeste';
+            const previousDaysDirectory = './pastaImagensTeste';
+            const currentDayContainer = document.getElementById('currentDayContainer');
+            const previousDaysContainer = document.getElementById('previousDaysContainer');
+            //    <a href="http://172.20.15.22:8080/cma/print-sgf/" class="redirect-button" target="_blank">VIEW PRINTS SGF</a>
+            function listDirectoryContents(directory, container, isCurrentDay) {
+                fetch(directory)
+                    .then(response => response.text())
+                    .then(html => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const files = Array.from(doc.querySelectorAll('a'))
+                                           .map(link => link.getAttribute('href'))
+                                           .filter(href => /\.(jpg|jpeg|png|gif)$/i.test(href));
+                        organizeFilesByDate(files, container, isCurrentDay);
+                    })
+                    .catch(error => console.error('Erro ao listar conteúdos da pasta:', error));
+            }
+
+            function organizeFilesByDate(files, container, isCurrentDay) {
+                const filesByDate = {};
+                const hoje = new Date();
+                const hojeString = hoje.toISOString().slice(0, 10);
+
+                files.forEach(file => {
+                    const fileName = file.split('/').pop();
+                    const fileDate = extractDateFromFileName(fileName);
+
+                    if (fileDate) {
+                        if (!filesByDate[fileDate]) {
+                            filesByDate[fileDate] = [];
+                        }
+                        filesByDate[fileDate].push(fileName);
+                    }
+                });
+
+                displayFilesByDate(filesByDate, hojeString, container, isCurrentDay);
+            }
+
+            function displayFilesByDate(filesByDate, hojeString, container, isCurrentDay) {
+                for (const [date, files] of Object.entries(filesByDate)) {
+                    const section = document.createElement('div');
+                    section.classList.add('day-section');
+
+                    const title = document.createElement('h3');
+                    title.classList.add('day-title');
+                    const arrow = document.createElement('span');
+                    arrow.classList.add('expand-arrow');
+                    arrow.textContent = '▶️';
+                    title.appendChild(arrow);
+                    title.appendChild(document.createTextNode(`Imagens de ${formatDate(date)}`));
+
+                    const ul = document.createElement('ul');
+                    ul.classList.add('day-images');
+
+                    files.forEach(file => {
+                        const li = document.createElement('li');
+                        const link = document.createElement('a');
+                        link.href = `${isCurrentDay ? currentDayDirectory : previousDaysDirectory}/${file}`;
+                        link.target = '_blank';
+                        link.textContent = file;
+                        li.appendChild(link);
+                        ul.appendChild(li);
+                    });
+
+                    ul.style.display = 'none';
+                    title.addEventListener('click', () => {
+                        ul.style.display = ul.style.display === 'none' ? 'block' : 'none';
+                        title.classList.toggle('active');
+                    });
+
+                    section.appendChild(title);
+                    section.appendChild(ul);
+
+                    container.appendChild(section);
+                }
+            }
+
+            function extractDateFromFileName(fileName) {
+                const regex = /RGVP_(\d{4})(\d{2})(\d{2})/;
+                const match = fileName.match(regex);
+                if (match) {
+                    return `${match[1]}-${match[2]}-${match[3]}`;
+                }
+                return '';
+            }
+
+            function formatDate(dateString) {
+                const [year, month, day] = dateString.split('-');
+                return `${day}/${month}/${year}`;
+            }
+
+            listDirectoryContents(currentDayDirectory, currentDayContainer, true);
+            listDirectoryContents(previousDaysDirectory, previousDaysContainer, false);
+        };
+    </script>
+</body>
+</html>
